@@ -8,8 +8,15 @@
   },
   "dependencies": {
     "@pick-star/cli-mongodb": "^1.0.3",
+    "ali-oss": "^6.10.0",
     "egg": "^2.15.1",
-    "egg-scripts": "^2.11.0"
+    "egg-redis": "^2.4.0",
+    "egg-scripts": "^2.11.0",
+    "egg-socket.io": "^4.1.6",
+    "fs-extra": "^9.0.1",
+    "glob": "^7.1.6",
+    "simple-git": "^2.20.1",
+    "user-home": "^2.0.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",
@@ -24,9 +31,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-imooc-cli-server",
+    "start": "egg-scripts start --sticky --daemon --title=egg-server-imooc-cli-server",
     "stop": "egg-scripts stop --title=egg-server-imooc-cli-server",
-    "dev": "egg-bin dev",
+    "dev": "egg-bin dev --sticky",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",
