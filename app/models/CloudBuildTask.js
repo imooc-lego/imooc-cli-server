@@ -12,19 +12,24 @@ const SUCCESS = 0;
 const FAILED = -1;
 
 class CloudBuildTask {
-  constructor({ repo, type, name, branch, version }, { ctx }) {
+  constructor({ repo, type, name, branch, version, prod }, { ctx }) {
     this._repo = repo;
     this._type = type;
     this._name = name;
     this._branch = branch;
     this._version = version;
+    this._prod = prod;
     this._dir = path.resolve(userHome, '.imooc-cli', 'node_modules', `${this._name}@${this._version}`);
     this._sourceCodeDir = path.resolve(this._dir, this._name);
     fse.ensureDirSync(this._dir);
     fse.emptyDirSync(this._dir);
     this._git = new Git(this._dir);
     this._ctx = ctx;
-    this.oss = new OSS(config.OSS_PROD_BUCKET);
+    if (this.isProd()) {
+      this.oss = new OSS(config.OSS_PROD_BUCKET);
+    } else {
+      this.oss = new OSS(config.OSS_DEV_BUCKET);
+    }
   }
 
   async prepare() {
@@ -54,7 +59,6 @@ class CloudBuildTask {
 
   async prePublish() {
     const buildPath = this.findBuildPath();
-    this.log(buildPath);
     if (!buildPath) {
       return this.failed('未找到构建路径，请检查');
     }
@@ -72,7 +76,6 @@ class CloudBuildTask {
         if (err) {
           resolve(false);
         } else {
-          this.log(files);
           Promise.all(files.map(async file => {
             const filepath = path.resolve(this._buildPath, file);
             const uploadOSSRes = await this.oss.put(`${this._name}/${file}`, filepath);
@@ -149,6 +152,10 @@ class CloudBuildTask {
         this._ctx.socket.emit('building', data.toString());
       });
     });
+  }
+
+  isProd() {
+    return this._prod === 'true';
   }
 }
 

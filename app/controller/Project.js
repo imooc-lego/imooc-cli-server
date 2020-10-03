@@ -47,6 +47,8 @@ class ProjectController extends Controller {
     let oss;
     if (ossProjectType === PROJECT_TYPE_PROD) {
       oss = new OSS(config.OSS_PROD_BUCKET);
+    } else {
+      oss = new OSS(config.OSS_DEV_BUCKET);
     }
     if (oss) {
       const fileList = await oss.list(`${ossProjectName}/`);

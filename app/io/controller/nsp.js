@@ -19,6 +19,7 @@ async function createCloudBuildTask(ctx, app) {
     name: task.name,
     branch: task.branch,
     version: task.version,
+    prod: task.prod,
   }, { ctx, app });
 }
 
@@ -88,7 +89,7 @@ async function prePublish(cloudBuildTask, socket, helper) {
 
 async function publish(cloudBuildTask, socket, helper) {
   socket.emit('build', helper.parseMsg('publish', {
-    message: '开发发布',
+    message: '开始发布',
   }));
   const publishRes = await cloudBuildTask.publish();
   if (!publishRes) {
@@ -115,7 +116,7 @@ class NspController extends Controller {
       await publish(cloudBuildTask, socket, helper);
       await cloudBuildTask.clean();
       socket.emit('build', helper.parseMsg('build success', {
-        message: `云构建成功，访问链接：https://imooc.youbaobao.xyz/${cloudBuildTask._name}/index.html`,
+        message: `云构建成功，访问链接：https://${cloudBuildTask.isProd() ? 'imooc' : 'imooc-dev'}.youbaobao.xyz/${cloudBuildTask._name}/index.html`,
       }));
       socket.disconnect();
     } catch (error) {

@@ -2,6 +2,8 @@
 
 'use strict';
 
+const { REDIS_PWD, REDIS_PORT, REDIS_HOST } = require('./db');
+
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -31,9 +33,9 @@ module.exports = appInfo => {
 
   config.redis = {
     client: {
-      port: 6379,
-      host: '127.0.0.1',
-      password: '',
+      port: REDIS_PORT,
+      host: REDIS_HOST,
+      password: REDIS_PWD,
       db: 0,
     },
   };
@@ -56,8 +58,10 @@ module.exports = appInfo => {
     },
 
     redis: {
-      host: '127.0.0.1',
-      port: 6379,
+      host: REDIS_HOST,
+      port: REDIS_PORT,
+      password: REDIS_PWD,
+      db: 0,
     },
   };
 
