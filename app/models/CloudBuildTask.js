@@ -54,7 +54,8 @@ class CloudBuildTask {
 
   async build() {
     let res = true;
-    res && (res = await this.execCommand('cnpm install'));
+    res && (res = await this.execCommand('npm install --only=prod'));
+    res && (res = await this.execCommand('npm install --only=dev'));
     res && (res = await this.execCommand('npm run build'));
     return res;
   }
