@@ -107,8 +107,8 @@ class NspController extends Controller {
   async build() {
     const { ctx, app } = this;
     const { socket, helper } = ctx;
+    const cloudBuildTask = await createCloudBuildTask(ctx, app);
     try {
-      const cloudBuildTask = await createCloudBuildTask(ctx, app);
       await prepare(cloudBuildTask, socket, helper);
       await download(cloudBuildTask, socket, helper);
       await build(cloudBuildTask, socket, helper);
@@ -123,6 +123,7 @@ class NspController extends Controller {
       socket.emit('build', helper.parseMsg('error', {
         message: '云构建失败，失败原因：' + error.message,
       }));
+      await cloudBuildTask.clean();
       socket.disconnect();
     }
   }

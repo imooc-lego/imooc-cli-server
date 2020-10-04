@@ -21,6 +21,8 @@ class CloudBuildTask {
     this._prod = prod;
     this._dir = path.resolve(userHome, '.imooc-cli', 'node_modules', `${this._name}@${this._version}`);
     this._sourceCodeDir = path.resolve(this._dir, this._name);
+    this.log('this._dir', this._dir);
+    this.log('this._sourceCodeDir', this._sourceCodeDir);
     fse.ensureDirSync(this._dir);
     fse.emptyDirSync(this._dir);
     this._git = new Git(this._dir);
@@ -114,6 +116,7 @@ class CloudBuildTask {
   findBuildPath() {
     const buildDir = [ 'dist', 'build' ];
     const buildPath = buildDir.find(dir => fs.existsSync(path.resolve(this._sourceCodeDir, dir)));
+    this.log('buildPath', buildPath);
     if (buildPath) {
       return path.resolve(this._sourceCodeDir, buildPath);
     }
@@ -122,6 +125,7 @@ class CloudBuildTask {
 
   clean() {
     if (fs.existsSync(this._dir)) {
+      this.log('do clean', this._dir);
       fse.removeSync(this._dir);
     }
   }
