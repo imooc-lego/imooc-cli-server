@@ -52,10 +52,15 @@ class CloudBuildTask {
     return false;
   }
 
-  async build() {
+  async install() {
     let res = true;
     res && (res = await this.execCommand('npm install --only=prod'));
     res && (res = await this.execCommand('npm install --only=dev'));
+    return res;
+  }
+
+  async build() {
+    let res = true;
     res && (res = await this.execCommand('npm run build'));
     return res;
   }

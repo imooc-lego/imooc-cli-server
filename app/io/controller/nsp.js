@@ -55,9 +55,25 @@ async function download(cloudBuildTask, socket, helper) {
   }));
 }
 
+async function install(cloudBuildTask, socket, helper) {
+  socket.emit('build', helper.parseMsg('build', {
+    message: '开始安装依赖',
+  }));
+  const buildRes = await cloudBuildTask.install();
+  if (!buildRes) {
+    socket.emit('build', helper.parseMsg('build failed', {
+      message: '依赖安装失败',
+    }));
+    return;
+  }
+  socket.emit('build', helper.parseMsg('build', {
+    message: '依赖安装成功',
+  }));
+}
+
 async function build(cloudBuildTask, socket, helper) {
   socket.emit('build', helper.parseMsg('build', {
-    message: '开启启动云构建任务',
+    message: '开启启动云构建',
   }));
   const buildRes = await cloudBuildTask.build();
   if (!buildRes) {
@@ -111,6 +127,7 @@ class NspController extends Controller {
     try {
       await prepare(cloudBuildTask, socket, helper);
       await download(cloudBuildTask, socket, helper);
+      await install(cloudBuildTask, socket, helper);
       await build(cloudBuildTask, socket, helper);
       await prePublish(cloudBuildTask, socket, helper);
       await publish(cloudBuildTask, socket, helper);
