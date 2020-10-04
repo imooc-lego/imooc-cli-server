@@ -1,6 +1,7 @@
 'use strict';
 
 const PREFIX = 'cloudbuild';
+const CloudBuildTask = require('../../models/CloudBuildTask');
 
 module.exports = () => {
   return async (ctx, next) => {
@@ -43,6 +44,16 @@ module.exports = () => {
 
       logger.info('#leave', task);
       if (hasTask) {
+        // 兜底逻辑，确保缓存文件被删除
+        const cloudBuildTask = new CloudBuildTask({
+          repo: query.repo,
+          type: query.type,
+          name: query.name,
+          branch: query.branch,
+          version: query.version,
+          prod: query.prod,
+        }, { ctx, app });
+        cloudBuildTask.clean();
         await app.redis.del(`${PREFIX}:${task}`);
       }
     } catch (e) {

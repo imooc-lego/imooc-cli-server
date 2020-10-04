@@ -13,6 +13,7 @@ const FAILED = -1;
 
 class CloudBuildTask {
   constructor({ repo, type, name, branch, version, prod }, { ctx }) {
+    this._ctx = ctx;
     this._repo = repo;
     this._type = type;
     this._name = name;
@@ -26,7 +27,6 @@ class CloudBuildTask {
     fse.ensureDirSync(this._dir);
     fse.emptyDirSync(this._dir);
     this._git = new Git(this._dir);
-    this._ctx = ctx;
     if (this.isProd()) {
       this.oss = new OSS(config.OSS_PROD_BUCKET);
     } else {
