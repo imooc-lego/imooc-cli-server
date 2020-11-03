@@ -2,7 +2,7 @@
 
 'use strict';
 
-const { REDIS_PWD, REDIS_PORT, REDIS_HOST } = require('./db');
+const { REDIS_PWD, REDIS_PORT, REDIS_HOST, MYSQL_PWD, MYSQL_DB, MYSQL_USER, MYSQL_PORT, MYSQL_HOST } = require('./db');
 
 /**
  * @param {Egg.EggAppInfo} appInfo app info
@@ -51,10 +51,6 @@ module.exports = appInfo => {
         ],
         packetMiddleware: [],
       },
-      '/example': {
-        connectionMiddleware: [],
-        packetMiddleware: [],
-      },
     },
 
     redis: {
@@ -63,6 +59,26 @@ module.exports = appInfo => {
       password: REDIS_PWD,
       db: 0,
     },
+  };
+
+  // mysql
+  config.mysql = {
+    client: {
+      // host
+      host: MYSQL_HOST,
+      // 端口号
+      port: MYSQL_PORT,
+      // 用户名
+      user: MYSQL_USER,
+      // 密码
+      password: MYSQL_PWD,
+      // 数据库名
+      database: MYSQL_DB,
+    },
+    // 是否加载到 app 上，默认开启
+    app: true,
+    // 是否加载到 agent 上，默认关闭
+    agent: false,
   };
 
   return {

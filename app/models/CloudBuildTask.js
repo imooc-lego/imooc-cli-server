@@ -54,8 +54,8 @@ class CloudBuildTask {
 
   async install() {
     let res = true;
-    res && (res = await this.execCommand('npm install --only=prod'));
-    res && (res = await this.execCommand('npm install --only=dev'));
+    res && (res = await this.execCommand('npm install --only=prod --registry=https://registry.npm.taobao.org'));
+    res && (res = await this.execCommand('npm install --only=dev --registry=https://registry.npm.taobao.org'));
     return res;
   }
 

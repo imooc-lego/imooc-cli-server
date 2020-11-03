@@ -5,22 +5,7 @@ const OSS = require('../models/OSSTask');
 const mongo = require('../utils/mongo');
 const config = require('../../config/db');
 const { PROJECT_TYPE_PROD } = require('../const');
-
-function success(message, data) {
-  return {
-    code: 0,
-    message,
-    data,
-  };
-}
-
-function failed(message, data) {
-  return {
-    code: -1,
-    message,
-    data,
-  };
-}
+const { success, failed } = require('../utils/request');
 
 class ProjectController extends Controller {
   async getTemplate() {
