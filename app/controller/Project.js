@@ -42,6 +42,31 @@ class ProjectController extends Controller {
     }
     ctx.body = failed('获取项目文件失败');
   }
+
+  async getOSSFile() {
+    const { ctx } = this;
+    const file = ctx.query.name;
+    let ossProjectType = ctx.query.type;
+    if (!file) {
+      ctx.body = failed('请提供OSS文件名称');
+      return;
+    }
+    if (!ossProjectType) {
+      ossProjectType = PROJECT_TYPE_PROD;
+    }
+    let oss;
+    if (ossProjectType === PROJECT_TYPE_PROD) {
+      oss = new OSS(config.OSS_PROD_BUCKET);
+    } else {
+      oss = new OSS(config.OSS_DEV_BUCKET);
+    }
+    if (oss) {
+      const fileList = await oss.list(file);
+      ctx.body = success('获取项目文件成功', fileList);
+      return;
+    }
+    ctx.body = failed('获取项目文件失败');
+  }
 }
 
 module.exports = ProjectController;
