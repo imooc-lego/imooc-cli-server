@@ -20,7 +20,7 @@ class CloudBuildTask {
     this._branch = branch;
     this._version = version;
     this._prod = prod;
-    this._dir = path.resolve(userHome, '.imooc-cli', 'node_modules', `${this._name}@${this._version}`);
+    this._dir = path.resolve(userHome, '.imooc-cli', 'cloudbuild', `${this._name}@${this._version}`);
     this._sourceCodeDir = path.resolve(this._dir, this._name);
     this.log('this._dir', this._dir);
     this.log('this._sourceCodeDir', this._sourceCodeDir);
@@ -54,8 +54,9 @@ class CloudBuildTask {
 
   async install() {
     let res = true;
-    res && (res = await this.execCommand('npm install --only=prod --registry=https://registry.npm.taobao.org'));
-    res && (res = await this.execCommand('npm install --only=dev --registry=https://registry.npm.taobao.org'));
+    // res && (res = await this.execCommand('npm install --only=prod --registry=https://registry.npm.taobao.org'));
+    // res && (res = await this.execCommand('npm install --only=dev --registry=https://registry.npm.taobao.org'));
+    res && (res = await this.execCommand('npm install --registry=https://registry.npm.taobao.org'));
     return res;
   }
 

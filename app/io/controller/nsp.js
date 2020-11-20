@@ -96,6 +96,7 @@ async function prePublish(cloudBuildTask, socket, helper) {
     socket.emit('build', helper.parseMsg('pre-publish failed', {
       message: '发布前检查失败，失败原因：' + prePublishRes.message,
     }));
+    throw new Error('发布终止');
     return;
   }
   socket.emit('build', helper.parseMsg('pre-publish', {
