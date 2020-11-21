@@ -60,7 +60,8 @@ class CloudBuildTask {
     if (this.isCnpm()) {
       res && (res = await this.execCommand('cnpm install'));
     } else {
-      res && (res = await this.execCommand('npm install --registry=https://registry.npm.taobao.org'));
+      res && (res = await this.execCommand('npm install --only=prod --registry=https://registry.npm.taobao.org'));
+      res && (res = await this.execCommand('npm install --only=dev --registry=https://registry.npm.taobao.org'));
     }
     return res;
   }
