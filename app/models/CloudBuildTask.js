@@ -12,7 +12,7 @@ const SUCCESS = 0;
 const FAILED = -1;
 
 class CloudBuildTask {
-  constructor({ repo, type, name, branch, version, prod }, { ctx }) {
+  constructor({ repo, type, name, branch, version, prod, keepCache, cnpm, buildCmd }, { ctx }) {
     this._ctx = ctx;
     this._repo = repo;
     this._type = type;
@@ -20,10 +20,16 @@ class CloudBuildTask {
     this._branch = branch;
     this._version = version;
     this._prod = prod;
+    this._keepCache = keepCache;
+    this._cnpm = cnpm;
+    this._buildCmd = buildCmd;
     this._dir = path.resolve(userHome, '.imooc-cli', 'cloudbuild', `${this._name}@${this._version}`);
     this._sourceCodeDir = path.resolve(this._dir, this._name);
     this.log('this._dir', this._dir);
     this.log('this._sourceCodeDir', this._sourceCodeDir);
+  }
+
+  async prepare() {
     fse.ensureDirSync(this._dir);
     fse.emptyDirSync(this._dir);
     this._git = new Git(this._dir);
@@ -32,9 +38,6 @@ class CloudBuildTask {
     } else {
       this.oss = new OSS(config.OSS_DEV_BUCKET);
     }
-  }
-
-  async prepare() {
     return this.success();
   }
 
@@ -54,15 +57,21 @@ class CloudBuildTask {
 
   async install() {
     let res = true;
-    // res && (res = await this.execCommand('npm install --only=prod --registry=https://registry.npm.taobao.org'));
-    // res && (res = await this.execCommand('npm install --only=dev --registry=https://registry.npm.taobao.org'));
-    res && (res = await this.execCommand('npm install --registry=https://registry.npm.taobao.org'));
+    if (this.isCnpm()) {
+      res && (res = await this.execCommand('cnpm install'));
+    } else {
+      res && (res = await this.execCommand('npm install --registry=https://registry.npm.taobao.org'));
+    }
     return res;
   }
 
   async build() {
     let res = true;
-    res && (res = await this.execCommand('npm run build'));
+    if (this._buildCmd && this._buildCmd.startsWith('npm run build')) {
+      res && (res = await this.execCommand(this._buildCmd));
+    } else {
+      res && (res = await this.execCommand('npm run build'));
+    }
     return res;
   }
 
@@ -131,7 +140,7 @@ class CloudBuildTask {
   }
 
   clean() {
-    if (fs.existsSync(this._dir)) {
+    if (fs.existsSync(this._dir) && !this.isKeepCache()) {
       this.log('do clean', this._dir);
       fse.removeSync(this._dir);
     }
@@ -167,6 +176,14 @@ class CloudBuildTask {
 
   isProd() {
     return this._prod === 'true';
+  }
+
+  isKeepCache() {
+    return this._keepCache === 'true';
+  }
+
+  isCnpm() {
+    return this._cnpm === 'true';
   }
 }
 

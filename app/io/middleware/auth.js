@@ -52,6 +52,9 @@ module.exports = () => {
           branch: query.branch,
           version: query.version,
           prod: query.prod,
+          keepCache: query.keepCache,
+          cnpm: query.cnpm,
+          buildCmd: query.buildCmd,
         }, { ctx, app });
         cloudBuildTask.clean();
         await app.redis.del(`${PREFIX}:${task}`);

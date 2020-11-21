@@ -20,6 +20,9 @@ async function createCloudBuildTask(ctx, app) {
     branch: task.branch,
     version: task.version,
     prod: task.prod,
+    keepCache: task.keepCache,
+    cnpm: task.cnpm,
+    buildCmd: task.buildCmd,
   }, { ctx, app });
 }
 
@@ -97,7 +100,6 @@ async function prePublish(cloudBuildTask, socket, helper) {
       message: '发布前检查失败，失败原因：' + prePublishRes.message,
     }));
     throw new Error('发布终止');
-    return;
   }
   socket.emit('build', helper.parseMsg('pre-publish', {
     message: '发布前检查通过',
