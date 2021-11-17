@@ -18,6 +18,16 @@ class ProjectController extends Controller {
     }
   }
 
+  async getKeqqTemplate() {
+    const { ctx } = this;
+    const data = await mongo().query('keqq');
+    if (data && data.length > 0) {
+      ctx.body = data;
+    } else {
+      ctx.body = [];
+    }
+  }
+
   async getOSSProject() {
     const { ctx } = this;
     const ossProjectName = ctx.query.name;

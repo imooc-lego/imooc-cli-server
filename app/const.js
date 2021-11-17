@@ -5,6 +5,6 @@ module.exports = {
   PROJECT_TYPE_DEV: 'dev',
   STATUS: {
     ON: 1,
-    OFF: 1,
+    OFF: 0,
   },
 };
